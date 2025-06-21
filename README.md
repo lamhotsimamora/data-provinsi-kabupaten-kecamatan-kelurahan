@@ -6,4 +6,4 @@ Demo : https://lamhotsimamora.github.io/data-provinsi-kabupaten-kecamatan-kelura
 
 ###
 Screenshoot
-
+   <img src="image/screenshoot.png" alt="Data Provinsi Kabupaten Kecamatan Kelurahan" >
