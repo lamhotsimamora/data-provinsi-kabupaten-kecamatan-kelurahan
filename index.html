@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provinsi Kabupaten Kecamatan</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+
+        <form class="max-w-sm mx-auto">
+            <br>
+            <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                <span class="font-medium">Data Provinsi Kabupaten Kecamatan Kelurahan</span> Github : <a href="http://github.com/lamhotsimamora">Lamhot Simamora</a>
+                <p>
+                    API Source : <a href="https://github.com/emsifa/api-wilayah-indonesia">https://github.com/emsifa/api-wilayah-indonesia</a>
+                </p>
+            </div>
+
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" style="color:blue">JSON</label>
+            <textarea v-model="result" rows="24" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Data Will Be Replace In Here"></textarea>
+            <hr>
+            <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300">Pilih Provinsi</span>
+            <select v-model="result_provinsi" @change="loadKabupaten(result_provinsi)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option v-for="data in provinsi" :value="data.id">{{data.name}}</option>
+            </select>
+            <br>
+            <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300">Pilih Kabupaten</span>
+            <select v-model="result_kabupaten" @change="loadKecamatan(result_kabupaten)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option v-for="data in kabupaten" :value="data.id">{{data.name}}</option>
+            </select>
+            <br>
+            <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300">Pilih Kecamatan</span>
+            <select v-model="result_kecamatan" @change="loadKelurahan(result_kecamatan)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option v-for="data in kecamatan" :value="data.id">{{data.name}}</option>
+            </select>
+            <br>
+            <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300">Pilih Kelurahan</span>
+            <select v-model="result_kelurahan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option v-for="data in kelurahan" :value="data.id">{{data.name}}</option>
+            </select>
+        </form>
+
+        <hr>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
+    <script>
+        const url_provinsi = 'https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json';
+        const url_kabupaten = 'https://www.emsifa.com/api-wilayah-indonesia/api/regencies/';
+        const url_kecamatan = 'https://www.emsifa.com/api-wilayah-indonesia/api/districts/';
+        const url_kelurahan = 'https://www.emsifa.com/api-wilayah-indonesia/api/villages/';
+
+        new Vue({
+            el: "#app",
+            data: {
+                provinsi: null,
+                kabupaten: null,
+                kecamatan: null,
+                kelurahan: null,
+                result_provinsi: null,
+                result_kabupaten: null,
+                result_kecamatan: null,
+                result_kelurahan: null,
+                result: null
+            },
+            methods: {
+                loadProvinsi: function() {
+                    const $this = this;
+                    axios.get(url_provinsi)
+                        .then(function(response) {
+                            $this.provinsi = response.data;
+                            $this.result = JSON.stringify(response.data);
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        })
+                        .finally(function() {
+
+                        });
+                },
+                loadKabupaten: function(id) {
+                    const $this = this;
+                    axios.get(url_kabupaten + id + '.json')
+                        .then(function(response) {
+                            $this.kabupaten = response.data;
+                            $this.result = JSON.stringify(response.data);
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        })
+                        .finally(function() {
+
+                        });
+                },
+                loadKecamatan: function(id) {
+                    const $this = this;
+                    axios.get(url_kecamatan + id + '.json')
+                        .then(function(response) {
+                            $this.kecamatan = response.data;
+                            $this.result = JSON.stringify(response.data);
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        })
+                        .finally(function() {
+
+                        });
+                },
+                loadKelurahan: function(id) {
+                    const $this = this;
+                    axios.get(url_kelurahan + id + '.json')
+                        .then(function(response) {
+                            $this.kelurahan = response.data;
+                            $this.result = JSON.stringify(response.data);
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        })
+                        .finally(function() {
+
+                        });
+                },
+            },
+            mounted() {
+                this.loadProvinsi()
+            },
+        })
+    </script>
+</body>
+
+</html>
